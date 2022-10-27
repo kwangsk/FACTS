@@ -16,3 +16,7 @@ Usage:
 	
 For example:
 	python facts.py lwpr_configs.ini GesturalScores/TVtest.G
+
+
+For detailed descriptions of design features and modules, please
+refer to Kim et al. (in review). 

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # Public version
 
-# Based on Kim et al. (in review)
+# Based on Kim et al. (in review) 
+# Released Nov 2022
 
 # Purpose: Main file to run FACTS.
 
