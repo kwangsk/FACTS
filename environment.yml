@@ -1,0 +1,20 @@
+name: facts_env
+channels:
+  - anaconda
+  - conda-forge
+  - defaults
+dependencies:
+  - numpy=1.19.1
+  - matplotlib=3.2.2
+  - python=3.6.10
+  - pandas=1.0.5
+  - spyder=4.1.5
+  - seaborn=0.10.1
+  - jupyter=1.0.0
+  - tensorflow=2.1.0
+  - hyperas=0.4.1
+  - dataclasses=0.7
+  - pip=20.3.3
+  - plotly=4.14.3
+  - pip:
+    - varname==0.6.0
