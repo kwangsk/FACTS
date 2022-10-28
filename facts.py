@@ -91,7 +91,7 @@ def main(argv):
         #model.artic_state_estimator.update()
         model.task_state_estimator.update(catch)
         
-        plot = True
+        plot = False
         if plot:
             if trial < model.auditory_perturbation.PerturbOnsetTrial-1:
                 condition = 'baseline'

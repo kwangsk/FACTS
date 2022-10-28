@@ -42,9 +42,9 @@ class Model():
         formants = self.acoustic_synthesis.run(a_actual)
         formants_shifted = self.auditory_perturbation.run(formants,i_frm,trial,catch)
         formants_noise, a_noise = self.sensory_system_noise.run(formants_shifted,a_actual)
-        a_tilde, y_hat = self.artic_state_estimator.run(prev_a_tilde,adotdot,formants_shifted,a_noise,ms_frm,i_frm,catch)
+        a_tilde, y_hat = self.artic_state_estimator.run(prev_a_tilde,adotdot,formants_noise,a_noise,ms_frm,i_frm,catch)
         x_tilde = self.task_state_estimator.run(a_tilde)
-        return x_tilde, a_tilde, a_actual, formants, formants_shifted, adotdot, y_hat
+        return x_tilde, a_tilde, a_actual, formants, formants_noise, adotdot, y_hat
         
     # Factory methods
     def artic_sfc_law_factory(self,configs):
@@ -123,8 +123,8 @@ class Hierarchical_Model(Model):
         formants_shifted = self.auditory_perturbation.run(formants,i_frm,trial,catch)
         formants_noise, a_noise = self.sensory_system_noise.run(formants_shifted,a_actual)
         a_tilde, a_hat = self.artic_state_estimator.run(prev_a_tilde,adotdot,a_noise,ms_frm,i_frm,catch)
-        x_tilde = self.task_state_estimator.run(a_tilde,formants_shifted,i_frm,catch)
-        return x_tilde, a_tilde, a_actual, formants, formants_shifted, adotdot
+        x_tilde = self.task_state_estimator.run(a_tilde,formants_noise,i_frm,catch)
+        return x_tilde, a_tilde, a_actual, formants, formants_noise, adotdot
     
 class Hierarchical_JacUpdateDebug(Hierarchical_Model):
     def artic_sfc_law_factory(self,configs):
@@ -151,8 +151,8 @@ class Hierarchical_JacUpdateDebug(Hierarchical_Model):
         formants_shifted = self.auditory_perturbation.run(formants,i_frm,trial,False)
         formants_noise, a_noise = self.sensory_system_noise.run(formants_shifted,a_actual)
         a_tilde, a_hat = self.artic_state_estimator.run(prev_a_tilde,adotdot,a_noise,ms_frm,i_frm,False)
-        x_tilde, y_hat = self.task_state_estimator.run(prev_a_tilde,formants_shifted,i_frm,catch,xdotdot)
-        return x_tilde, a_tilde, a_actual, formants, formants_shifted, adotdot, y_hat
+        x_tilde, y_hat = self.task_state_estimator.run(prev_a_tilde,formants_noise,i_frm,catch,xdotdot)
+        return x_tilde, a_tilde, a_actual, formants, formants_noise, adotdot, y_hat
         
 
 class Hierarchical_xdotdot(Hierarchical_Model):
@@ -172,5 +172,5 @@ class Hierarchical_xdotdot(Hierarchical_Model):
         formants_shifted = self.auditory_perturbation.run(formants,i_frm,trial,catch)
         formants_noise, a_noise = self.sensory_system_noise.run(formants_shifted,a_actual)
         a_tilde, a_hat = self.artic_state_estimator.run(prev_a_tilde,adotdot,a_noise,ms_frm,i_frm,catch)
-        x_tilde, y_hat = self.task_state_estimator.run(prev_a_tilde,formants_shifted,i_frm,catch,xdotdot)
-        return x_tilde, a_tilde, a_actual, formants, formants_shifted, adotdot, y_hat
+        x_tilde, y_hat = self.task_state_estimator.run(prev_a_tilde,formants_noise,i_frm,catch,xdotdot)
+        return x_tilde, a_tilde, a_actual, formants, formants_noise, adotdot, y_hat
