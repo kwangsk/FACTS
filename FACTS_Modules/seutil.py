@@ -1,4 +1,4 @@
-#Various methods used for state estimators
+# Various methods used for state estimators
 
 #The UKF methods (e.g., Tigmas) contain contents 
 #from the file exchange code published by Yi Cao:
@@ -12,6 +12,8 @@ import numpy as np
 from .ode45_replica import ode45_dim6
 from scipy.integrate import solve_ivp
 
+# Updating Articulatory State Prediction
+# Design A in Kim et al. (in review)
 def UpdateArticStatePrediction(ASPmodel,atildemem):
     for i in range(len(atildemem)):
         for z in range(gv.a_dim):
@@ -23,18 +25,24 @@ def UpdateArticStatePrediction(ASPmodel,atildemem):
 
     return ASPmodel
 
+# Checks if the auditory prediction error exceeds the Auditory Prediction 
+# Error Threshold (APET), and save them in the memory module if it does.
+# Used by Design A (to update articulatory state prediction later)
 def sensoryerrorandatildesave(y,z,senmem,x,i_frm,u,finalatilde,oldatilde,atildemem,APET):
     if abs(y[0]-z[0]) > APET: # will have to incorporate F2/F3 later
         #print("*****************perturb detect(*****************")
         senmem.append(np.append(x[0:gv.a_dim*2],z))
-        #print(oldatilde)
-        #print(u)
-        #print(finalatilde)
+        #print(oldatilde) #pos + vel
+        #print(u) #
+        #print(finalatilde) # pos + vel
         #print(np.append(oldatilde,np.append(u,finalatilde)))
         atildemem.append(np.append(oldatilde,np.append(u,finalatilde)))
         
     return senmem, atildemem
 
+# Checks if the auditory prediction error exceeds the Auditory Prediction 
+# Error Threshold (APET), and save them in the memory module if it does.
+# Used by Design C (to update articulatory-to-task state transformation later)
 def auderror(y,z,senmem,x,taskmem,finalx,atilde,APET):
     if abs(y[0]-z[0]) > APET: # will have to incorporate F2/F3 later
     #if abs((y[0]-z[0])/z[0]) > APET:
@@ -43,8 +51,7 @@ def auderror(y,z,senmem,x,taskmem,finalx,atilde,APET):
         taskmem.append(np.append(atilde[0:gv.a_dim],finalx[0:gv.x_dim]))
     return senmem, taskmem
 
-#def UpdateArticStatePrediction(u,x,ASP):
-
+# Update sensory prediction module (used by Design B)
 def UpdateSensoryPrediction(feedbackType, LWPRformant,LWPRsom,senmem):
 
     if feedbackType == 'audOnly':
@@ -76,12 +83,15 @@ def UpdateSensoryPrediction(feedbackType, LWPRformant,LWPRsom,senmem):
     senmem = []
     return senmem, LWPRformant
 
+# Update task prediction module (not used in the manuscript. Debug)
 def UpdateTaskPrediction(Taskmodel,Taskmem,senmem):
     for i in range(len(senmem)):
         Taskmodel.update(Taskmem[i][0:gv.a_dim],Taskmem[i][gv.a_dim:gv.a_dim+gv.x_dim])
     Taskmem = []
     return Taskmem, Taskmodel
 
+# Update auditory prediction module in Design C (not used in the
+# manuscript. Debug)
 def UpdateAuditoryPrediction(Audmodel,Taskmem,senmem):
     if len(senmem) > 15:
         for i in range(len(senmem)):
@@ -101,13 +111,16 @@ def sensoryerrorsave(y,z,senmem,x,i_frm):
         #print("detected frame", i_frm)
     return senmem
 
+# Return the Cholesky decomposition
+# Used to compute sigma points
 def chol(Phat):
     try:
         R = np.linalg.cholesky(Phat)
         return R,0
     except:
         return 0,1
-    
+
+# Computes sigma points for UKF (or AUKF)
 def sigmas(x,P,c):
     #Sigma points around reference point
     #Inputs:
@@ -138,11 +151,9 @@ def sigmas(x,P,c):
                 # Ahat failed the chol test. It must have been just a hair off,
                 # due to floating point trash, so it is simplest now just to
                 # tweak by adding a tiny multiple of an identity matrix.
-                
-                #This has not been thoroughly tested, just because the loop does
-                #not reach here and many matlab functions had to be converted to
-                #Python version... must investigate further if this error keeps
-                #occuring. KSK 1/18/2021
+                # If this error keeps, it is very likely that the state estimate variables
+                # are not realistic. 
+
                 mineig = min(np.linalg.eigvals(Phat))
                 #print("MINEIG" ,(-mineig*(k**2) + np.spacing(mineig)))
                 Phat = Phat + (-mineig*(k**2) + np.spacing(mineig))*np.eye(np.size(P,0),np.size(P,1))
@@ -155,13 +166,16 @@ def sigmas(x,P,c):
     X = np.concatenate((np.array([x]).T,Y+A,Y-A), axis =1) # to be used for Unscented Kalman Filter
     return X
 
-
+# A helper function for computing covariance matrices
 def transformedDevandCov(Y,y,Wc,R):
     Y1 = (Y.T - y).T
     P=np.matmul(np.matmul(Y1,np.diag(Wc)),Y1.T)+R
       
     return Y1,P
 
+# Articulatory State Prediction that uses actual ODE45
+# (see Parrell et al., 2019). We no longer use this since we
+# have implemented this with LWPRs (see below).
 def ArticStatePredict(X,Wm,Wc,n,R,u,ms_frm):
     #Unscented Transformation for process model
     #Input:
@@ -190,6 +204,8 @@ def ArticStatePredict(X,Wm,Wc,n,R,u,ms_frm):
     return y_tmean,Y,P,Y1
     
 
+# Articulatory State Prediction that uses LWPR
+# Used in all designs in Kim et al. (in review)
 def ArticStatePredict_LWPR(X,Wm,Wc,n,R,u,ms_frm,ASPmodel):
     #Unscented Transformation for process model
     #Input:
@@ -226,7 +242,8 @@ def ArticStatePredict_LWPR(X,Wm,Wc,n,R,u,ms_frm,ASPmodel):
     Y1,P = transformedDevandCov(Y,y_tmean,Wc,R)
     return y_tmean,Y,P,Y1
 
-
+# Auditory prediction moodule for the classic architecture (Parrell et al., 2019)
+# Also used in Design A and B in Kim et al. (in review)
 def AuditoryPrediction(LWPRformant,X1,Wm):    
     L=X1.shape[1]
     y=np.zeros(3)
@@ -240,6 +257,9 @@ def AuditoryPrediction(LWPRformant,X1,Wm):
     
     return Y,y
 
+
+# Auditory prediction moodule for the new architecture 
+# (e.g., Design C in in Kim et al. in review)
 def TaskAuditoryPrediction(LWPRformant,X1,Wm):    
     L=X1.shape[1]
     y=np.zeros(3)
@@ -258,6 +278,7 @@ def TaskAuditoryPrediction(LWPRformant,X1,Wm):
 #Y1=Y-y(:,ones(1,L));
 #P=np.matmul(np.matmul(Y1,np.diag(Wc)),Y1.T)+R
 
+# Somatosensory prediction moodule
 def SomatosensoryPrediction(feedbackType,LWPRsom,org_Y,org_y,X1,Wm):
     L=X1.shape[1]
     y=np.zeros(gv.a_dim*2)
@@ -286,6 +307,7 @@ def SomatosensoryPrediction(feedbackType,LWPRsom,org_Y,org_y,X1,Wm):
         
     #return Y,y
 
+# State correction in which Kalman gain is multiplied to the prediction error
 def StateCorrection(X2,Wc,Y1,P,z,y):
     #Kalman gain calculation
     P12=np.matmul(np.matmul(X2,np.diag(Wc)),Y1.T)  #transformed cross-covariance

@@ -16,6 +16,7 @@ from .util import string2dtype_array
 import global_variables as gv
 import numpy as np
 
+#Articulatory Kinematic without noise. Integrates adotdot.
 class ArticKinematics():
     def run(self, prev_a_actual, adotdot, ms_frm):
         a = solve_ivp(fun=lambda t, y: ode45_dim6(t,y,adotdot), 
@@ -23,10 +24,11 @@ class ArticKinematics():
                       dense_output=True, rtol=1e-13, atol=1e-22).y[:,-1]
         return a
 
+#Articulatory Kinematic with noise.
 class ArticKinematics_Noise(ArticKinematics):
     def __init__(self,kin_configs):
         self.norms_adotdot = string2dtype_array(kin_configs['norms_ADOTDOT'],'float32')
-        self.plant_scale = float(kin_configs['plant_scale']) #for controller noise, move it later 1/26/2021
+        self.plant_scale = float(kin_configs['plant_scale'])
     def run(self, prev_a_actual, adotdot, ms_frm):
         adotdot_noise = add_plant_noise(self.plant_scale,self.norms_adotdot,adotdot)
         a = super().run(prev_a_actual, adotdot_noise, ms_frm)

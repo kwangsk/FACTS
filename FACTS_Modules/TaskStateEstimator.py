@@ -1,12 +1,12 @@
-#Task state estimator
-#The general structure is similar to the articulatory
-#state estimator in that it also uses UKF.
-#Depending on the configuration specified in the
-#config files, different versions of task state
-#estimators will be chosen. 
+# Task state estimator
+# The general structure is similar to the articulatory
+# state estimator in that it also uses UKF.
+# Depending on the configuration specified in the
+# config files, different versions of task state
+# estimators will be chosen. 
 
-#In a few versions, AUKF is used instead of UKF
-#Please see Kim et al. (in review) for more details.
+# In a few versions, AUKF is used instead of UKF
+# Please see Kim et al. (in review) for more details.
 
 # The UKF methods (e.g., TaskStatePredict, run) contain contents 
 # from the file exchange code published by Yi Cao:
@@ -50,9 +50,10 @@ class TSE_LWPR_Classic(TSE_LWPR,TSEClassicInterface):
     def __init__(self,tse_configs):
         super().__init__(tse_configs)
     def run(self,a_tilde):
+        print("a_tilde",a_tilde)
         jac = self.Taskmodel.predict_J(a_tilde[0:gv.a_dim])
         x_tilde = np.append(jac[0],np.matmul(jac[1],a_tilde[gv.a_dim:2*gv.a_dim]))
-        #print("xtilde", x_tilde)
+        print("xtilde", x_tilde)
         return x_tilde
 
 #Task Estimator that receives auditory feedback
@@ -192,6 +193,7 @@ class TSE_LWPR_Hier(TSE_LWPR,TSEHierInterface):
         
     def update(self,catch):
         if self.learn and not catch == 2:
+            print("***********UPDATE***********")
             #self.Aud_model = seutil.UpdateAuditoryPrediction(self.Aud_model,self.taskmem,self.senmem)
             self.taskmem, self.Taskmodel = seutil.UpdateTaskPrediction(self.Taskmodel,self.taskmem,self.senmem)
             #print(Taskmodel.predict(np.array([0.0631606,-0.13590163,0.0706008,0.04309455,-0.00238945,0.00098181])))
@@ -386,7 +388,7 @@ class TSE_LWPR_Hier_xdotdotJacUpdateDebug(TSE_LWPR_Hier_xdotdot):
                     DeltaX, DeltaCov = seutil.StateCorrection(X2*self.AUKFmultFactor[0],self.Wc,Y1,obscov,z,y) #commented 052522
                     self.Q = self.defQ*self.AUKFmultFactor[1] #commented 052522
                     self.P = self.defP*self.AUKFmultFactor[2] #commented 052522
-                    print(DeltaX)
+                    #print(DeltaX)
                 else:
                     print("AUKF off")
                     self.P = self.defP

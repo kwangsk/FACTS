@@ -40,7 +40,8 @@ class ASE_Pass_Hier(ASE_Pass,ASEHierInterface):
         formants = [1000,2000,4000]
         a_tilde, a_hat = super().run(a_tilde,adotdot,formants,a_noise,ms_frm,i_frm,catch)
         return a_tilde
-    
+
+#Parent class for the articulatory state estimator 
 class ASE_UKF(ArticStateEstimator):
     def __init__(self,articstateest_configs,R_Auditory,R_Somato):
         #these are the parameters used in the paper simulations, read from config file
@@ -64,6 +65,8 @@ class ASE_UKF(ArticStateEstimator):
             self.ASP[i].init_lambda = 0.985
             self.ASP[i].tau_lambda = 0.995
             self.ASP[i].final_lambda =0.99995
+            self.ASP[i].init_D = self.ASP[i].init_D*0.000001
+
         self.Som_model = []
         for i in range(gv.a_dim*2):
             self.Som_model.append(LWPR(articstateest_configs['Somato_model_path']))
@@ -91,7 +94,10 @@ class ASE_UKF(ArticStateEstimator):
             self.learn = False
         self.atildemem = []
         self.defP = self.P
+        self.defQ = self.Q
 
+#Child class for the ASE classic architecture 
+#Examples: Parrell et al., 2019 and Design A and B in Kim et al., 2023
 class ASE_UKF_Classic(ASE_UKF,ASEClassicInterface): 
     def __init__(self,articstateest_configs,R_Auditory,R_Somato):
         super().__init__(articstateest_configs,R_Auditory,R_Somato)
@@ -141,6 +147,7 @@ class ASE_UKF_Classic(ASE_UKF,ASEClassicInterface):
 
         x = a_tilde
         u = adotdot
+        print(self.ASP[4].num_rfs)
         #print("atilde",a_tilde)
         #print("adotdot",adotdot)
         X=seutil.sigmas(x,self.P,self.c) #sigma points around x
@@ -173,12 +180,7 @@ class ASE_UKF_Classic(ASE_UKF,ASEClassicInterface):
 
                 Y,y=seutil.SomatosensoryPrediction(self.feedbackType,self.Som_model,Y,y,X1,self.Wm)
                 z = np.append(formant_noise,a_noise)
-                #print("predict", y[0:3])
-                #print("actual", z[0:3])
-                
-                #print("null", k[0:3])
-
-            #Y1 = trnasofrmed deviations, P = transformed covariance
+                #Y1 = trnasofrmed deviations, P = transformed covariance
             Y1,self.P = seutil.transformedDevandCov(Y,y,self.Wc,self.R)
             #save sensory error 
             #self.senmem = sensoryerrorsave(y,z,self.senmem,x1,i_frm)
@@ -187,7 +189,8 @@ class ASE_UKF_Classic(ASE_UKF,ASEClassicInterface):
             DeltaX, DeltaCov = seutil.StateCorrection(X2,self.Wc,Y1,self.P,z,y)
             #StateUpdate Eq 7, 
             x = x1 + DeltaX 
-            #print("x1:",x1)
+            #print(y)
+            print("DeltaX:",DeltaX)
             #print("org:",a_tilde)
             self.senmem, self.atildemem = seutil.sensoryerrorandatildesave(y,z,self.senmem,x1,i_frm,u,x,a_tilde,self.atildemem,self.APET)
             #x1= predicted state, deltaX= state update from sensoryprediction
@@ -201,14 +204,17 @@ class ASE_UKF_Classic(ASE_UKF,ASEClassicInterface):
         
     def update(self):
         if self.learn:
-            if self.Design == 'A':
+            if self.Design == 'A': #Design A
                 self.ASP = seutil.UpdateArticStatePrediction(self.ASP,self.atildemem)
-            elif self.Design == 'B':
+            elif self.Design == 'B': #Design B
                 self.senmem, self.Aud_model = seutil.UpdateSensoryPrediction(self.feedbackType,self.Aud_model,self.Som_model,self.senmem)
             self.atildemem = []
             self.senmem = []
         
-    
+
+#Child class for the ASE for the new architecutre (Design C in Kim et al., 2023) 
+#It only takes the somatosensory feedback for the state correction because
+#auditory feedback is implemented in the task state estimator instead.
 class ASE_UKF_Hier(ASE_UKF,ASEHierInterface):
     def __init__(self,articstateest_configs,R_Auditory,R_Somato):
         super().__init__(articstateest_configs,R_Auditory,R_Somato)

@@ -88,7 +88,7 @@ def main(argv):
             a_dotdot_record[trial, i_frm,:] = adotdot
         
         #Update the task state estimator after each trial (if it's not a catch trial)
-        #model.artic_state_estimator.update()
+        model.artic_state_estimator.update()
         model.task_state_estimator.update(catch)
         
         plot = False
@@ -103,8 +103,8 @@ def main(argv):
         save = True
         if save:
             write_path = 'Simulation/'
-            datafile_name = 'HierAUKF'
-            np.savetxt(write_path + 'formant_'+ datafile_name + '_' + str(trial) + '.csv',formant_record[trial],delimiter=',')
+            datafile_name = 'ClassicArtUp_audOnly'
+            #np.savetxt(write_path + 'formant_'+ datafile_name + '_' + str(trial) + '.csv',formant_record[trial],delimiter=',')
             #np.savetxt(write_path + 'predictformant_'+ datafile_name + '_' + str(trial) + '.csv',predict_formant_record[trial],delimiter=',')
             #np.savetxt(write_path + 'shiftformant_'+ datafile_name + '_' + str(trial) + '.csv',shift_record[trial],delimiter=',')
             #np.savetxt(write_path + 'articact_'+ datafile_name + '_' + str(trial) + '.csv',a_record[trial],delimiter=',')            
@@ -116,14 +116,14 @@ def main(argv):
     plt.show()
 
 if __name__ == "__main__":
-    #main(sys.argv[1:])
+    #main(sys.argv[1:])f
     #Fig 3
     #main(['DesignA.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: ClassicArtUp
     #main(['DesignB.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: ClassicAudUp
     #main(['DesignC.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: HierDef
     
     #Fig 4B
-    main(['DesignC_AUKF.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: HierAUKF
+    #main(['DesignC_AUKF.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: HierAUKF
     #main(['DesignC_AUKF_Mitsuyaetal_Up.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: HierAUKFmitsuyaUp
     #main(['DesignC_AUKF_Mitsuyaetal_Down.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: HierAUKFmitsuyaDown
     #main(['DesignC_Mitsuyaetal_Up.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: HierDefmitsuyaUp
@@ -133,7 +133,8 @@ if __name__ == "__main__":
     #Fig 5
     #main(['DesignC_AUKF_staticPRE.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: HierAUKFstaticpre
     #main(['DesignC_AUKF_movingPRE.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: HierAUKFmovingpre
-    #main(['DesignC_AUKF_catchjacupdate.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: HierAUKFJacUpdate
+    #main(['DesignC_AUKF_catchjacupdate2.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: HierAUKFJacUpdate
+    #main(['DesignC_AUKF_catchjacupdate6.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: HierAUKFJacUpdate
 
     #Fig 6
     #main(['DesignC_AUKF_onlinepert.ini','GesturalScores/KimetalOnlinepert.G']) #datafile_name: HierAUKFoc
@@ -166,3 +167,6 @@ if __name__ == "__main__":
     #main(['DesignC_AUKFforgethigh.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: HierAUKFforgethigh
 
     
+    #Review response
+    main(['DesignA_audOnly.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: ClassicArtUp_audOnly
+   

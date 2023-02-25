@@ -1,7 +1,7 @@
-#General utility methods
-#A place holder because future verions
-#of FACTS might need more shared methods
-#in the model.
+# General utility methods
+# A place holder because future verions
+# of FACTS that might need more shared methods
+# in the model.
 
 import numpy as np
 import re

@@ -1,3 +1,12 @@
+#AuditoryPerturbation.py is a module that can perturb
+#formatn frequencies (F1, F2, and F3).
+#The shift can be done in Hz (PerturbMode = 1)
+#or cents (PerturbtMode = 2).
+#When PerturbMode is  set to 0, there is not perturbation.
+
+#PerturbRamp = 1 (gradual)
+#PerturbRamp = 0 (sudden)
+
 from .util import string2dtype_array
 import numpy as np
 import global_variables as gv
