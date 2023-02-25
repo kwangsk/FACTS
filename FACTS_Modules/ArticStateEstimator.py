@@ -65,7 +65,7 @@ class ASE_UKF(ArticStateEstimator):
             self.ASP[i].init_lambda = 0.985
             self.ASP[i].tau_lambda = 0.995
             self.ASP[i].final_lambda =0.99995
-            self.ASP[i].init_D = self.ASP[i].init_D*0.000001
+            #self.ASP[i].init_D = self.ASP[i].init_D*0.000001 Debug, did not make a difference
 
         self.Som_model = []
         for i in range(gv.a_dim*2):
@@ -147,7 +147,7 @@ class ASE_UKF_Classic(ASE_UKF,ASEClassicInterface):
 
         x = a_tilde
         u = adotdot
-        print(self.ASP[4].num_rfs)
+        #print(self.ASP[4].num_rfs) #printing the number of receptive fields
         #print("atilde",a_tilde)
         #print("adotdot",adotdot)
         X=seutil.sigmas(x,self.P,self.c) #sigma points around x
@@ -180,7 +180,7 @@ class ASE_UKF_Classic(ASE_UKF,ASEClassicInterface):
 
                 Y,y=seutil.SomatosensoryPrediction(self.feedbackType,self.Som_model,Y,y,X1,self.Wm)
                 z = np.append(formant_noise,a_noise)
-                #Y1 = trnasofrmed deviations, P = transformed covariance
+                #Y1 = transformed deviations, P = transformed covariance
             Y1,self.P = seutil.transformedDevandCov(Y,y,self.Wc,self.R)
             #save sensory error 
             #self.senmem = sensoryerrorsave(y,z,self.senmem,x1,i_frm)
@@ -190,7 +190,7 @@ class ASE_UKF_Classic(ASE_UKF,ASEClassicInterface):
             #StateUpdate Eq 7, 
             x = x1 + DeltaX 
             #print(y)
-            print("DeltaX:",DeltaX)
+            #print("DeltaX:",DeltaX)
             #print("org:",a_tilde)
             self.senmem, self.atildemem = seutil.sensoryerrorandatildesave(y,z,self.senmem,x1,i_frm,u,x,a_tilde,self.atildemem,self.APET)
             #x1= predicted state, deltaX= state update from sensoryprediction
@@ -238,7 +238,7 @@ class ASE_UKF_Hier(ASE_UKF,ASEHierInterface):
             Y,y=seutil.SomatosensoryPrediction(self.feedbackType,self.Som_model,Y,y,X1,self.Wm)
             z = a_noise
             
-            #Y1 = trnasofrmed deviations, P = transformed covariance
+            #Y1 = transformed deviations, P = transformed covariance
             Y1,self.P = seutil.transformedDevandCov(Y,y,self.Wc,self.R)
             #save sensory error 
             #self.senmem = sensoryerrorsave(y,z,self.senmem,x1,i_frm)
