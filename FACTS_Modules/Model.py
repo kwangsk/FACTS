@@ -15,7 +15,6 @@ def model_factory(config):
     if 'ModelArchitecture' in config.keys():
         if config['ModelArchitecture']['architecture'] == 'classic': return Model(config)
         if config['ModelArchitecture']['architecture'] == 'hierarchical': return Hierarchical_Model(config)
-        if config['ModelArchitecture']['architecture'] == 'hierarchical_articsfcupdate': return Hierarchical_ArticSFCUpdate_Model(config)
         if config['ModelArchitecture']['architecture'] == 'hierarchical_xdotdot': return Hierarchical_xdotdot(config)
         if config['ModelArchitecture']['architecture'] == 'hierarchical_JacUpdateDebug': return Hierarchical_JacUpdateDebug(config)
     return Model(config)
@@ -34,7 +33,6 @@ class Model():
         R_Somato = self.sensory_system_noise.get_R_Somato()
         self.artic_state_estimator = self.ase_factory(model_configs,R_Auditory,R_Somato)
         self.task_state_estimator = self.tse_factory(model_configs['TaskStateEstimator'],R_Auditory,R_Somato)
-        #self.state_estimator = self._state_estimator_factory(model_configs,R_Auditory,R_Somato)
         
     #Method for executing FACTS modules in each step
     def run_one_timestep(self, prev_x_tilde, prev_a_tilde, prev_a_actual, GestScore, ART, ms_frm,i_frm, trial, catch):
