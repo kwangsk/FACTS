@@ -1,14 +1,15 @@
 #ArticKinematics module is the articulatory kinematic plant.
 #It receives articulatory motor command (adotdot) and 
-#integrates it to get the articulatory state varialbes.
+#integrates it to get the articulatory state variables.
 #It can also add noise to adotdot before the integration.
 
 #Integrator that uses a single-step solver (Runge-Kutta)
 #for ordinary differential equations.  It is modelled to 
 #mimic ode45 (a nonstiff differential equations solver)
 #from Matlab. In FACTS, this this simply integrates adotdot
-#and adot to compute the current articulatroy state
-#(position and velocity).
+#and adot with initial conditions of the previous state 
+#(position and velocity) to compute the current articulatory 
+#state (position and velocity).
 
 from .ode45_replica import ode45_dim6
 from scipy.integrate import solve_ivp

@@ -1,11 +1,10 @@
-# Sensory systems' noise.
-# sensory noise (auditory and somatosensory)
-# is simulated as Gaussian noise (np.random.normal).
+# Module to add Auditory and Somatosensory noise
 
 from .util import string2dtype_array
 import numpy as np
 import global_variables as gv
 
+# Gaussian case -- noise is simulated as Gaussian noise (np.random.normal).
 class SensorySystemNoise():
     def __init__(self,sensory_configs):
         # read in config data
@@ -31,7 +30,8 @@ class SensorySystemNoise():
         return self.R_Auditory
     def get_R_Somato(self):
         return self.R_Somato
-    
+
+# Pass-through case, no noise added    
 class SensorySystemNoise_None(SensorySystemNoise):
     def __init__(self):
         self.R_Auditory = np.array([])

@@ -4,6 +4,10 @@
 # using the solve_ivp method (which is equivalent 
 # to ode45 Runge-Kutta in Matlab)
 
+# Prepare the vector to integrate by appending velocity (extracted from 
+# previous state) and adotdot (provided by ArticSFCLaw). These will be 
+# integrated to get position and velocity, the new state.
+
 import numpy as np
 
 #debug function. Do not remove for now.

@@ -25,6 +25,8 @@ class ASEHierInterface:
 class ArticStateEstimator(ABC):
     def update(self):
         print('ASE Update not implemented')
+        
+#Pass-through case -- perfect observer that has access to the true state of the plant
 class ASE_Pass(ArticStateEstimator):
     def run(self, a_tilde,adotdot,formants,a_noise,ms_frm,i_frm,catch):
         a_tilde = a_noise
@@ -34,14 +36,15 @@ class ASE_Pass(ArticStateEstimator):
 class ASE_Pass_Classic(ASE_Pass,ASEClassicInterface):
     def run(self, a_tilde,adotdot,formants,a_noise,ms_frm,i_frm,catch):
         return super().run(a_tilde,adotdot,formants,a_noise,ms_frm,i_frm,catch)
-        
+    
+# Not implemented, formants are hard-coded for now        
 class ASE_Pass_Hier(ASE_Pass,ASEHierInterface):
     def run(self,a_tilde,adotdot,a_noise,ms_frm,i_frm,catch):
         formants = [1000,2000,4000]
         a_tilde, a_hat = super().run(a_tilde,adotdot,formants,a_noise,ms_frm,i_frm,catch)
         return a_tilde
 
-#Parent class for the articulatory state estimator 
+#UKF case -- uses an Unscented Kalman Filter to observe the state of the plant
 class ASE_UKF(ArticStateEstimator):
     def __init__(self,articstateest_configs,R_Auditory,R_Somato):
         #these are the parameters used in the paper simulations, read from config file

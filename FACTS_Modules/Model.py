@@ -1,10 +1,9 @@
-# Model.py runs all major FACTS modules. Modules that are 
-# carried out in each time step are listed in the method 
-# "run_one_timestep." model_factory builds FACTS based on 
-# the model architecture specified in config files. 
-
-# Under "Hierarchical_xdotdot," for example, the task 
-# state estimator type is defined as lwpr. 
+# The Model class is composed of FACTS modules. It dynamically constructs the 
+# proper subtype of each module and executes the proper run_one_timestep method
+# for the architecture specified in the config file. The model_factory method 
+# dynamically constructs the FACTS model using the architecture specified in 
+# the config file. This provides the flexibility to add different overall model
+# architectures as well as different implementations of individual modules.
 
 from FACTS_Modules.TaskSFCLaw import TaskSFCLaw
 from FACTS_Modules.AcousticSynthesis import AcousticSynthesis

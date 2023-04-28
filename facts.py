@@ -6,6 +6,8 @@
 
 # Purpose: Main file to run FACTS.
 
+# Usage: python facts.py <config file> <Gestural Score file>
+
 # Contributors:
 # Kwang S. Kim
 # Jessica L. Gaines

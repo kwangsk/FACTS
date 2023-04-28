@@ -1,3 +1,5 @@
+# Methods used for plotting FACTS output
+
 import matplotlib.pyplot as plt
 import numpy as np
 
