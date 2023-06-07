@@ -1,7 +1,7 @@
 #AuditoryPerturbation.py is a module that can perturb
-#formatn frequencies (F1, F2, and F3).
+#formant frequencies (F1, F2, and F3).
 #The shift can be done in Hz (PerturbMode = 1)
-#or cents (PerturbtMode = 2).
+#or cents (PerturbMode = 2).
 #When PerturbMode is  set to 0, there is not perturbation.
 
 #PerturbRamp = 1 (gradual)
@@ -71,6 +71,7 @@ class AuditoryPerturbation():
 
         return  formants_perturbed
 
+# Pass-through case -- no auditory perturbation
 class AuditoryPerturbation_None(AuditoryPerturbation):
     def __init__(self):
         self.PerturbOnsetTrial = np.inf

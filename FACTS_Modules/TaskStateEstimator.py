@@ -36,7 +36,8 @@ class TSEHierInterface():
     @abstractmethod
     def run(self,a_tilde,formants):
         raise NotImplementedError
-        
+
+# Parent class stores data related to all LWPR implementations of TSE        
 class TSE_LWPR(TaskStateEstimator):
     def __init__(self,tse_configs):
         self.Taskmodel = LWPR(tse_configs['Task_model_path'])

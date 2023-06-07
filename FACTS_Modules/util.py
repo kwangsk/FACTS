@@ -5,7 +5,8 @@
 
 import numpy as np
 import re
-    
+
+# Used for reading in arrays from config file
 def string2dtype_array(string,dtype):
     string = re.sub(r'[\s\[\]]', '', string)
     string_array = np.array(re.split(',', string))
@@ -13,9 +14,4 @@ def string2dtype_array(string,dtype):
         return np.array([])
     type_array = string_array.astype(dtype)
     return type_array
-
-def scale(point,min,max):
-    return (point - min)/(max-min)
-def unscale(point,min,max):
-    return (point * (max-min) + min)
     

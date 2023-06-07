@@ -1,10 +1,9 @@
-# Model.py runs all major FACTS modules. Modules that are 
-# carried out in each time step are listed in the method 
-# "run_one_timestep." model_factory builds FACTS based on 
-# the model architecture specified in config files. 
-
-# Under "Hierarchical_xdotdot," for example, the task 
-# state estimator type is defined as lwpr. 
+# The Model class is composed of FACTS modules. It dynamically constructs the 
+# proper subtype of each module and executes the proper run_one_timestep method
+# for the architecture specified in the config file. The model_factory method 
+# dynamically constructs the FACTS model using the architecture specified in 
+# the config file. This provides the flexibility to add different overall model
+# architectures as well as different implementations of individual modules.
 
 from FACTS_Modules.TaskSFCLaw import TaskSFCLaw
 from FACTS_Modules.AcousticSynthesis import AcousticSynthesis
@@ -15,7 +14,6 @@ def model_factory(config):
     if 'ModelArchitecture' in config.keys():
         if config['ModelArchitecture']['architecture'] == 'classic': return Model(config)
         if config['ModelArchitecture']['architecture'] == 'hierarchical': return Hierarchical_Model(config)
-        if config['ModelArchitecture']['architecture'] == 'hierarchical_articsfcupdate': return Hierarchical_ArticSFCUpdate_Model(config)
         if config['ModelArchitecture']['architecture'] == 'hierarchical_xdotdot': return Hierarchical_xdotdot(config)
         if config['ModelArchitecture']['architecture'] == 'hierarchical_JacUpdateDebug': return Hierarchical_JacUpdateDebug(config)
     return Model(config)
@@ -34,7 +32,6 @@ class Model():
         R_Somato = self.sensory_system_noise.get_R_Somato()
         self.artic_state_estimator = self.ase_factory(model_configs,R_Auditory,R_Somato)
         self.task_state_estimator = self.tse_factory(model_configs['TaskStateEstimator'],R_Auditory,R_Somato)
-        #self.state_estimator = self._state_estimator_factory(model_configs,R_Auditory,R_Somato)
         
     #Method for executing FACTS modules in each step
     def run_one_timestep(self, prev_x_tilde, prev_a_tilde, prev_a_actual, GestScore, ART, ms_frm,i_frm, trial, catch):

@@ -6,6 +6,8 @@
 
 # Purpose: Main file to run FACTS.
 
+# Usage: python facts.py <config file> <Gestural Score file>
+
 # Contributors:
 # Kwang S. Kim
 # Jessica L. Gaines
@@ -25,8 +27,15 @@ from FACTS_Modules.TADA import MakeGestScore
 from facts_visualizations import single_trial_plots, multi_trial_plots
 
 def main(argv):
+    try: open(argv[0])
+    except: 
+        print('Config file does not exist.\nUsage: python facts.py <config file> <Gestural Score file>')
+        sys.exit()
+    try: open(argv[1])
+    except: 
+        print('Gestural score file does not exist.\nUsage: python facts.py <config file> <Gestural Score file>')
+        sys.exit()
     config = configparser.ConfigParser()
-    config.read(argv[0])
     model = model_factory(config)
     if 'MultTrials' in config.sections(): 
         ntrials = int(config['MultTrials']['ntrials'])
