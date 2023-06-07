@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Public version
 
-# Based on Kim et al. (in review) 
+# Kim et al. (in press) 
 # Released Nov 2022
 
 # Purpose: Main file to run FACTS.
@@ -100,7 +100,7 @@ def main(argv):
             elif trial >= model.auditory_perturbation.PerturbOffsetTrial:
                 condition = 'aftereffect'
             single_trial_plots(condition,trial,a_record,a_tilde_record,formant_record,shift_record,x_record,argv)
-        save = True
+        save = False
         if save:
             write_path = 'Simulation/'
             datafile_name = 'ClassicArtUp_audOnly'
@@ -116,7 +116,7 @@ def main(argv):
     plt.show()
 
 if __name__ == "__main__":
-    #main(sys.argv[1:])f
+    main(sys.argv[1:])
     #Fig 3
     #main(['DesignA.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: ClassicArtUp
     #main(['DesignB.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: ClassicAudUp
@@ -166,7 +166,5 @@ if __name__ == "__main__":
     #main(['DesignC_AUKFforgetlow.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: HierAUKFforgetlow
     #main(['DesignC_AUKFforgethigh.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: HierAUKFforgethigh
 
-    
-    #Review response
-    main(['DesignA_audOnly.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: ClassicArtUp_audOnly
+
    
