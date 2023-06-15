@@ -17,7 +17,7 @@
 
 import global_variables as gv
 import numpy as np
-from .util import scale,unscale,string2dtype_array
+from .util import string2dtype_array
 from .LWPR_Model.lwpr import LWPR
 from abc import ABC, abstractmethod
 from . import seutil
@@ -51,10 +51,10 @@ class TSE_LWPR_Classic(TSE_LWPR,TSEClassicInterface):
     def __init__(self,tse_configs):
         super().__init__(tse_configs)
     def run(self,a_tilde):
-        print("a_tilde",a_tilde)
+        #print("a_tilde",a_tilde)
         jac = self.Taskmodel.predict_J(a_tilde[0:gv.a_dim])
         x_tilde = np.append(jac[0],np.matmul(jac[1],a_tilde[gv.a_dim:2*gv.a_dim]))
-        print("xtilde", x_tilde)
+        #print("xtilde", x_tilde)
         return x_tilde
 
 #Task Estimator that receives auditory feedback

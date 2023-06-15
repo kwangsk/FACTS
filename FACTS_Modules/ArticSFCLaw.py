@@ -10,7 +10,7 @@
 
 import numpy as np
 import global_variables as gv
-from .util import scale,unscale,string2dtype_array
+from .util import string2dtype_array
 from .LWPR_Model.lwpr import LWPR
 
 class ArticSFCLaw():
