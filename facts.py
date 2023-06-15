@@ -36,6 +36,7 @@ def main(argv):
         print('Gestural score file does not exist.\nUsage: python facts.py <config file> <Gestural Score file>')
         sys.exit()
     config = configparser.ConfigParser()
+    config.read(argv[0])
     model = model_factory(config)
     if 'MultTrials' in config.sections(): 
         ntrials = int(config['MultTrials']['ntrials'])
@@ -174,6 +175,6 @@ if __name__ == "__main__":
     #main(['DesignCforgethigh.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: HierDefforgethigh
     #main(['DesignC_AUKFforgetlow.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: HierAUKFforgetlow
     #main(['DesignC_AUKFforgethigh.ini','GesturalScores/KimetalAdapt.G']) #datafile_name: HierAUKFforgethigh
-
-
-   
+    
+    
+    
