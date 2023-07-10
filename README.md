@@ -40,6 +40,11 @@ For example:
 	main(['DesignC_AUKF.ini','GesturalScores/KimetalAdapt.G'])
 ```
 
+and run:
+```bash
+	python facts.py
+```
+
 ### If you are running your own configuration file (.ini) and gestural score (.G)
 
 ```bash
