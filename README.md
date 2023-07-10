@@ -14,7 +14,7 @@ You will need to have Python installed. We have used 3.6 but more recent version
 
 ## Python Virtual Environment
 
-In Anaconda Prompt, run
+In Anaconda Prompt (or command terminal), run
 ```gitbash
 	conda env create -f environment.yml
 ```
@@ -30,7 +30,7 @@ Please follow the steps at [the FACTS-support repo](https://github.com/kwangsk/F
 ## How to run
 
 ### If you are running simulations included in Kim et al. (in press)
-Make sure the line 119 is commented
+Make sure the line 129 is commented
 ```bash
 #main(sys.argv[1:])
 ```
@@ -46,7 +46,11 @@ and run:
 ```
 
 ### If you are running your own configuration file (.ini) and gestural score (.G)
-
+Make sure the line 129 is NOT commented
+```bash
+main(sys.argv[1:])
+```
+and run a command in this format:
 ```bash
 	python facts.py [config filepath .ini] [Gestural Score filepath]
 ```
