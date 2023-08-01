@@ -22,6 +22,7 @@ Then run:
 ```gitbash
 	conda activate facts_env
 ```
+Also note that you will have to activate (load) the enviornment each time you open a new terminal and run FACTS.
 	
 ## Support Files 
 Please follow the steps at [the FACTS-support repo](https://github.com/kwangsk/FACTS-support)
